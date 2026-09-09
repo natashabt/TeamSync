@@ -1,11 +1,17 @@
 const { createClient } = require("redis");
 
+const redisUrl = process.env.REDIS_URL;
+
+if (!redisUrl) {
+  console.error("REDIS_URL is not defined!");
+}
+
 const redisClient = createClient({
-  url: process.env.REDIS_URL || "redis://127.0.0.1:6379",
+  url: redisUrl,
 });
 
 redisClient.on("error", (error) => {
-  console.error("Redis Client Error:", error);
+  console.error("Redis Client Error:", error.message);
 });
 
 const connectRedis = async () => {
@@ -18,6 +24,8 @@ const connectRedis = async () => {
       "Redis connection failed:",
       error.message
     );
+
+    throw error;
   }
 };
 
